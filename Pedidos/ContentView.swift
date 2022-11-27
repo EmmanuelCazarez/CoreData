@@ -10,30 +10,29 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
+    
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
+        entity: PedidoEntity.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \PedidoEntity.idPedido, ascending: true)])
+        var pedidos: FetchedResults<PedidoEntity>
 
+    @State var textFieldText: String = ""
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
+                ForEach(pedidos) { pedido in
+                    Text("Pedido \(pedido.idPedido)")
+                        .onTapGesture {
+                            updateItems(pedido: pedido)
+                        }
                 }
                 .onDelete(perform: deleteItems)
             }
+            .navigationTitle("Lista de Pedidos")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
+                    Button(action: addItems) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
@@ -42,34 +41,43 @@ struct ContentView: View {
         }
     }
 
-    private func addItem() {
+    private func addItems() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            let newPedido = PedidoEntity(context: viewContext)
+            newPedido.articulo = "Hola"
 
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            saveItems()
         }
     }
 
+    private func updateItems(pedido: PedidoEntity) {
+        withAnimation {
+            let currentPedido = pedido.idPedido
+            let newPedido = currentPedido + 1
+            pedido.idPedido = newPedido
+            
+            saveItems()
+        }
+    }
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            guard let index = offsets.first else { return }
+            let pedidoEntity = pedidos[index]
+            viewContext.delete(pedidoEntity)
+                
+            saveItems()
+        }
+    }
+    
+    private func saveItems() {
+        do {
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
 }

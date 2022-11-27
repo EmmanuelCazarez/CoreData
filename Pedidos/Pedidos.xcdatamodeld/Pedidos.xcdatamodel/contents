@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Item" representedClassName="Item" isAbstract="YES" syncable="YES" codeGenerationType="class">
+    <entity name="PedidoEntity" representedClassName="PedidoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="articulo" optional="YES" attributeType="String"/>
         <attribute name="cliente" optional="YES" attributeType="String"/>
         <attribute name="direccion" optional="YES" attributeType="String"/>
         <attribute name="estado" optional="YES" attributeType="String"/>
         <attribute name="fecha_entrega" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="idPedido" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="PedidoEntity" positionX="-54" positionY="54" width="128" height="134"/>
     </elements>
 </model>
