@@ -15,7 +15,7 @@ struct PersistenceController {
         let viewContext = result.container.viewContext
         for x in 0..<10 {
             let newPedido = PedidoEntity(context: viewContext)
-            newPedido.idPedido = Int32(x)
+            newPedido.idPedido = Int64(x)
         }
         do {
             try viewContext.save()
