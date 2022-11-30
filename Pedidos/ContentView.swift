@@ -24,6 +24,7 @@ struct ContentView: View {
     @State var estado = ""
     @State var direccion = ""
     @State var total = ""
+    @State var fecha_entrega = Date()
     
     var body: some View {
         NavigationView {
@@ -43,10 +44,16 @@ struct ContentView: View {
                                 Text("Total: \(pedido.total ?? "")")
                                 TextField("Cantidad total", text: $total)
                             }
+                            Text("Fecha de entrega: \(pedido.fecha_entrega ?? Date.now, formatter: itemFormatter)")
+                            DatePicker("Fecha de entrega", selection: $fecha_entrega, displayedComponents: [.date]).datePickerStyle(.graphical)
                             Button("Guardar") {
                                 updateItems(pedido: pedido)
                                 mostrarAlerta = true
                             }
+                            .frame(maxWidth: .infinity, maxHeight: 30)
+                            .foregroundColor(.white)
+                            .background(.blue)
+                            .cornerRadius(5)
                             .alert("El pedido fue actualizado con éxito", isPresented: $mostrarAlerta) {
                                 Button("Aceptar") {}
                             }
@@ -75,10 +82,16 @@ struct ContentView: View {
                                     Text("Total")
                                     TextField("Cantidad total", text: $total)
                                 }
+                                Text("Fecha de entrega")
+                                DatePicker("Fecha de entrega", selection: $fecha_entrega, displayedComponents: [.date]).datePickerStyle(.graphical)
                                 Button("Guardar") {
-                                    addItems(cliente: cliente, articulo: articulo, estado: estado, direccion: direccion, total: total)
+                                    addItems(cliente: cliente, articulo: articulo, estado: estado, direccion: direccion, total: total, fecha_entrega: fecha_entrega)
                                     mostrarAlerta = true
                                 }
+                                .frame(maxWidth: .infinity, maxHeight: 30)
+                                .foregroundColor(.white)
+                                .background(.blue)
+                                .cornerRadius(5)
                                 .alert("El pedido fue guardado con éxito", isPresented: $mostrarAlerta) {
                                     Button("Aceptar") {}
                                 }
@@ -91,7 +104,7 @@ struct ContentView: View {
         }
     }
     
-    private func addItems(cliente: String, articulo: String, estado: String, direccion: String, total: String) {
+    private func addItems(cliente: String, articulo: String, estado: String, direccion: String, total: String, fecha_entrega: Date) {
         withAnimation {
             let newPedido = PedidoEntity(context: viewContext)
             newPedido.cliente = cliente
@@ -99,6 +112,7 @@ struct ContentView: View {
             newPedido.estado = estado
             newPedido.direccion = direccion
             newPedido.total = total
+            newPedido.fecha_entrega = fecha_entrega
             newPedido.idPedido = getLastId()! + 1
 
             saveItems()
@@ -113,6 +127,7 @@ struct ContentView: View {
             pedido.estado = estado
             pedido.direccion = direccion
             pedido.total = total
+            pedido.fecha_entrega = fecha_entrega
             
             saveItems()
             vaciarDatos()
@@ -146,8 +161,8 @@ struct ContentView: View {
         estado = ""
         direccion = ""
         total = ""
+        fecha_entrega = Date.now
     }
-    
     
     private func getLastId() -> Int64? {
 
@@ -182,6 +197,12 @@ struct ContentView: View {
 
         return maxId
     }
+    
+    private let itemFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
 }
 
 struct ContentView_Previews: PreviewProvider {
